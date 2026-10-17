@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Флаг</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%232f9e6b%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-size=%2220%22 font-family=%22Arial%22 font-weight=%22900%22 text-anchor=%22middle%22 fill=%22white%22%3E%D0%A0%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/style.css?v=202610172025">
+<style>
+  main.game { justify-content: flex-start; }
+  .flag-frame {
+    position: relative; width: min(100%, 360px); aspect-ratio: 4 / 3;
+    border-radius: 14px; overflow: hidden; background: var(--surface);
+    box-shadow: var(--shadow); border: 1px solid var(--line);
+  }
+  .flag-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .flag-cover { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); }
+  .flag-cover .cell {
+    background: var(--surface-2); border: 1px solid var(--line);
+    display: grid; place-items: center;
+    font: 900 2rem var(--display); color: var(--tile-line);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .flag-cover .cell.open { opacity: 0; transform: scale(0.85); }
+  .flag-counter { font-weight: 800; color: var(--muted); }
+  .pick-box { width: 100%; display: flex; justify-content: center; margin-top: auto; padding-bottom: 8px; }
+</style>
+</head>
+<body>
+<main class="game"></main>
+<script src="../data/geo.js?v=202610172025"></script>
+<script src="../assets/core.js?v=202610172025"></script>
+<script src="../assets/geo-core.js?v=202610172025"></script>
+<script src="flag.js?v=202610172025"></script>
+</body>
+</html>

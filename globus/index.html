@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Глобус</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%232f9e6b%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-size=%2220%22 font-family=%22Arial%22 font-weight=%22900%22 text-anchor=%22middle%22 fill=%22white%22%3E%D0%A0%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/style.css?v=202610172025">
+<style>
+  main.game { justify-content: flex-start; }
+  .globe-wrap { position: relative; width: min(100%, 440px, 52dvh); aspect-ratio: 1; }
+  .globe-wrap svg { width: 100%; height: 100%; touch-action: none; cursor: grab; display: block; }
+  .globe-wrap svg:active { cursor: grabbing; }
+  .ocean { fill: color-mix(in srgb, var(--game) 22%, var(--surface)); stroke: color-mix(in srgb, var(--game) 45%, transparent); stroke-width: 1.5; }
+  .grat { fill: none; stroke: color-mix(in srgb, var(--game) 18%, transparent); stroke-width: 0.6; }
+  .land { fill: var(--surface); stroke: var(--tile-line); stroke-width: 0.5; transition: fill 0.4s; }
+  .land.hit { stroke: rgba(0, 0, 0, 0.35); }
+  .zoom { position: absolute; right: 0; bottom: 6px; display: flex; flex-direction: column; gap: 4px; }
+  .zoom .icon-btn { background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+  .globe-info { font-weight: 700; color: var(--muted); text-align: center; }
+  .globe-info b { color: var(--text); }
+  .pick-box { width: 100%; display: flex; justify-content: center; gap: 8px; }
+  .pick-box .picker { flex: 1; }
+  .btn.small { padding: 8px 12px; font-size: 0.85rem; }
+  .near-list { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 4px; }
+  .near { display: grid; grid-template-columns: 14px 1fr auto; gap: 10px; align-items: center; padding: 7px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; font-weight: 700; cursor: pointer; }
+  .near i { width: 14px; height: 14px; border-radius: 4px; }
+  .near .km { color: var(--muted); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<main class="game"></main>
+<script src="../assets/vendor/d3-array.min.js?v=202610172025"></script>
+<script src="../assets/vendor/d3-geo.min.js?v=202610172025"></script>
+<script src="../assets/vendor/topojson-client.min.js?v=202610172025"></script>
+<script src="../data/geo.js?v=202610172025"></script>
+<script src="../assets/core.js?v=202610172025"></script>
+<script src="../assets/geo-core.js?v=202610172025"></script>
+<script src="globus.js?v=202610172025"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Лесенка</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%232f9e6b%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-size=%2220%22 font-family=%22Arial%22 font-weight=%22900%22 text-anchor=%22middle%22 fill=%22white%22%3E%D0%A0%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/style.css?v=202610172025">
+<style>
+  main.game { justify-content: flex-start; }
+  .ladder-info { display: flex; gap: 16px; color: var(--muted); font-size: 0.9rem; }
+  .ladder {
+    flex: 1;
+    min-height: 0;
+    max-height: 52dvh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    --ts: 52px;
+  }
+  .lrow { display: flex; gap: 6px; }
+  .lrow.start .tile:not([data-state]) { background: var(--surface-2); }
+  .lrow.target .tile { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .tile.changed { position: relative; outline: 3px solid var(--game); outline-offset: 2px; }
+  .help .mini .tile.changed { outline-width: 2px; outline-offset: 1px; }
+  .lgap { color: var(--muted); line-height: 1; font-size: 1.4rem; }
+  .ladder-controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .ladder-controls .btn { padding: 8px 12px; font-size: 0.9rem; }
+  .summary .word.path { font-size: 1.05rem; letter-spacing: 0.04em; }
+  .keyboard { margin-top: auto; }
+</style>
+</head>
+<body>
+<main class="game"></main>
+<script src="../data/words.js?v=202610172025"></script>
+<script src="../assets/core.js?v=202610172025"></script>
+<script src="lesenka.js?v=202610172025"></script>
+</body>
+</html>

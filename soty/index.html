@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Соты</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%232f9e6b%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-size=%2220%22 font-family=%22Arial%22 font-weight=%22900%22 text-anchor=%22middle%22 fill=%22white%22%3E%D0%A0%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/style.css?v=202610172025">
+<style>
+  main.game { justify-content: flex-start; gap: 14px; }
+  .rank { width: 100%; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; }
+  .rank b { font: 700 1rem var(--display); }
+  .rank-bar { display: flex; gap: 4px; align-items: center; }
+  .rank-bar i { flex: 1; height: 8px; border-radius: 4px; background: var(--key); }
+  .rank-bar i.on { background: var(--game); }
+  .rank-score { grid-column: 1 / -1; color: var(--muted); font-size: 0.85rem; font-weight: 700; }
+  .found { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; }
+  .found summary { font-weight: 800; cursor: pointer; }
+  .found-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .found-list span { padding: 3px 9px; border-radius: 8px; background: var(--surface-2); font-weight: 700; font-size: 0.9rem; }
+  .found-list span.pan { background: var(--game); color: #2a1d00; }
+  .found-list span.miss { opacity: 0.45; text-decoration: line-through dotted; }
+  .word-line { min-height: 46px; font: 700 1.9rem var(--display); text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; }
+  .word-line .c { color: var(--game); }
+  .word-line .bad { color: var(--muted); opacity: 0.5; }
+  .word-line .ph { font: 600 1rem var(--body); color: var(--muted); text-transform: none; letter-spacing: 0; }
+
+  .hive { --h: 84px; position: relative; width: calc(var(--h) * 2.6); height: calc(var(--h) * 2.85); }
+  .hex {
+    position: absolute; width: calc(var(--h) * 1.0); height: calc(var(--h) * 0.88);
+    left: calc(50% - var(--h) * 0.5); top: calc(50% - var(--h) * 0.44);
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+    border: 0; background: var(--key); color: var(--text);
+    font: 800 1.7rem var(--display); text-transform: uppercase;
+    transition: transform 0.08s;
+  }
+  .hex:active { transform: scale(0.92); }
+  .hex.center { background: var(--game); color: #2a1d00; }
+  .hex.o0 { translate: 0 calc(var(--h) * -0.92); }
+  .hex.o1 { translate: calc(var(--h) * 0.8) calc(var(--h) * -0.46); }
+  .hex.o2 { translate: calc(var(--h) * 0.8) calc(var(--h) * 0.46); }
+  .hex.o3 { translate: 0 calc(var(--h) * 0.92); }
+  .hex.o4 { translate: calc(var(--h) * -0.8) calc(var(--h) * 0.46); }
+  .hex.o5 { translate: calc(var(--h) * -0.8) calc(var(--h) * -0.46); }
+  .hive-ctrls { display: flex; gap: 10px; }
+  .btn.round { width: 50px; border-radius: 50%; font-size: 1.2rem; padding: 0; }
+  .link-btn { border: 0; background: none; color: var(--muted); font-weight: 700; text-decoration: underline; font-size: 0.85rem; }
+  @media (max-height: 700px) { .hive { --h: 70px; } }
+</style>
+</head>
+<body>
+<main class="game"></main>
+<script src="../data/soty.js?v=202610172025"></script>
+<script src="../assets/core.js?v=202610172025"></script>
+<script src="soty.js?v=202610172025"></script>
+</body>
+</html>

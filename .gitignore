@@ -1,0 +1,5 @@
+# Сырые данные и зависимости сборки — скачиваются заново (см. README)
+tools/raw/
+tools/node_modules/
+__pycache__/
+*.pyc

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Разминка — ежедневные головоломки</title>
+<meta name="description" content="Разминка: десять ежедневных головоломок на русском — слова, числа и география.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%232f9e6b%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-size=%2220%22 font-family=%22Arial%22 font-weight=%22900%22 text-anchor=%22middle%22 fill=%22white%22%3E%D0%A0%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css?v=202610172025">
+<style>
+  .hub { max-width: 1040px; margin: 0 auto; padding: 28px 16px 56px; width: 100%; }
+  .hero { text-align: center; margin: 18px 0 30px; }
+  .logo { display: inline-flex; gap: 6px; flex-wrap: wrap; justify-content: center; --ts: clamp(34px, 9vw, 62px); }
+  .logo .tile { animation: logoIn 0.5s ease both; font-weight: 900; }
+  @keyframes logoIn { from { transform: rotateX(90deg); } }
+  .hero p.tag { margin: 16px auto 0; color: var(--muted); font-size: 1.05rem; max-width: 520px; font-weight: 600; }
+  .today {
+    display: inline-flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center;
+    margin-top: 18px; padding: 10px 18px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+    font-weight: 700; font-size: 0.92rem;
+  }
+  .today .sep { width: 1px; height: 18px; background: var(--line); }
+  .today b { font-family: var(--display); font-variant-numeric: tabular-nums; }
+  .progress { display: inline-flex; gap: 3px; vertical-align: middle; }
+  .progress i { width: 9px; height: 9px; border-radius: 3px; background: var(--key); }
+  .progress i.on { background: var(--correct); }
+  .progress i.off { background: var(--absent); }
+
+  .cat { margin: 34px 0 12px; display: flex; align-items: baseline; gap: 10px; }
+  .cat h2 { margin: 0; font-size: 1.15rem; }
+  .cat span { color: var(--muted); font-size: 0.85rem; font-weight: 700; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+  .card {
+    position: relative; display: flex; flex-direction: column;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    text-decoration: none; color: var(--text); overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.14s, box-shadow 0.14s;
+  }
+  .card:hover { transform: translateY(-3px) rotate(-0.4deg); box-shadow: var(--shadow); }
+  .card .art {
+    height: 112px; display: grid; place-items: center;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(255,255,255,0.22), transparent 45%),
+      var(--game);
+    position: relative;
+  }
+  .card .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .card h3 { margin: 0; font-size: 1.05rem; }
+  .card p { margin: 0; color: var(--muted); font-size: 0.88rem; flex: 1; font-weight: 600; }
+  .chip {
+    align-self: flex-start; margin-top: 6px;
+    font-size: 0.75rem; font-weight: 800; padding: 4px 9px; border-radius: 999px;
+    background: var(--surface-2); color: var(--muted);
+  }
+  .chip.done { background: color-mix(in srgb, var(--correct) 16%, transparent); color: var(--correct); }
+  .chip.lost { background: color-mix(in srgb, var(--absent) 22%, transparent); }
+  .chip.go { background: color-mix(in srgb, var(--game) 16%, transparent); color: var(--game); }
+
+  /* мини-иллюстрации на карточках */
+  .art .t { --ts: 26px; }
+  .art .tile { border: 0; background: rgba(255,255,255,0.92); color: #2a2218; font-size: 13px; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.12); }
+  .art .tile.g { background: #2f9e6b; color: #fff; }
+  .art .tile.y { background: #e2a72e; color: #fff; }
+  .art .tile.x { background: rgba(0,0,0,0.28); color: #fff; }
+  .art .row { display: flex; gap: 4px; }
+  .art .col { display: flex; flex-direction: column; gap: 3px; --ts: 17px; }
+  .art .col .tile { font-size: 9px; }
+  .art .quad { display: grid; grid-template-columns: repeat(2, auto); gap: 8px; }
+  .art .quad .row { --ts: 12px; gap: 2px; }
+  .art .quad .tile { font-size: 0; border-radius: 3px; }
+  .art .stair { display: flex; flex-direction: column; gap: 3px; --ts: 20px; }
+  .art .stair .tile { font-size: 11px; }
+  .hexes { position: relative; width: 104px; height: 96px; }
+  .hexes span {
+    position: absolute; width: 34px; height: 30px;
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+    background: rgba(255,255,255,0.92); color: #2a2218;
+    display: grid; place-items: center; font: 800 13px var(--display); text-transform: uppercase;
+  }
+  .hexes span.c { background: #2a2218; color: #ffd24d; }
+  .flagart { width: 120px; height: 80px; border-radius: 6px; overflow: hidden; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); box-shadow: 0 4px 0 rgba(0,0,0,0.15); }
+  .flagart i { background: rgba(255,255,255,0.9); }
+  .flagart i.f1 { background: linear-gradient(#fff 33%, #1c57a5 33% 66%, #d52b1e 66%); }
+  .flagart i.f2 { background: linear-gradient(#fff 33%, #1c57a5 33% 66%, #d52b1e 66%); }
+  .flagart i.q { display: grid; place-items: center; font: 900 18px var(--display); color: rgba(0,0,0,0.3); background: rgba(255,255,255,0.75); }
+  .globe {
+    width: 88px; height: 88px; border-radius: 50%;
+    background:
+      radial-gradient(circle at 34% 30%, rgba(255,255,255,0.55), transparent 40%),
+      radial-gradient(circle at 60% 58%, #b8231b 0 9px, #e8682a 10px 15px, #f2b84a 16px 22px, transparent 23px),
+      radial-gradient(circle at 26% 66%, #f4d27a 0 10px, transparent 11px),
+      #1d4fa8;
+    box-shadow: inset -10px -10px 18px rgba(0,0,0,0.3), 0 4px 0 rgba(0,0,0,0.15);
+  }
+  .table { display: flex; flex-direction: column; gap: 4px; }
+  .table .row span {
+    width: 40px; height: 18px; border-radius: 4px; background: rgba(255,255,255,0.9);
+    font: 800 10px var(--body); color: #2a2218; display: grid; place-items: center;
+  }
+  .table .row span.g { background: #2f9e6b; color: #fff; }
+  .table .row span.y { background: #e2a72e; color: #fff; }
+  .file-warn {
+    max-width: 640px; margin: -8px auto 8px; padding: 12px 16px; border-radius: 14px;
+    background: color-mix(in srgb, var(--present) 18%, var(--surface)); border: 1px solid var(--present);
+    font-weight: 600; font-size: 0.92rem; text-align: center;
+  }
+  .link-btn { border: 0; background: none; color: var(--muted); font-weight: 700; text-decoration: underline; font-size: 0.85rem; margin-top: 8px; }
+  .hub-foot { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 40px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="hub">
+  <div class="hero">
+    <div class="logo" id="logo"></div>
+    <p class="tag">Десять коротких головоломок каждый день — со словами, числами и картой мира. Всё на русском.</p>
+    <div class="today" id="today"></div>
+  </div>
+  <div id="cats"></div>
+  <p class="hub-foot">Новые задания каждый день в 00:00 по Москве · Прогресс хранится в этом браузере<br>
+    <button class="link-btn" id="reset">Сбросить прогресс</button></p>
+</div>
+<script src="assets/core.js?v=202610172025"></script>
+<script>
+(function () {
+  const C = window.Core;
+  let day = C.dayNumber();
+
+  // Логотип из плиток.
+  const logo = document.getElementById("logo");
+  const states = ["correct", "present", "absent", "correct", "", "present", "correct", "absent"];
+  [..."разминка"].forEach((ch, i) => {
+    const t = C.el("div", "tile", ch);
+    if (states[i]) t.dataset.state = states[i];
+    t.style.animationDelay = i * 70 + "ms";
+    logo.appendChild(t);
+  });
+
+  const ART = {
+    slovo: `<div class="row t"><div class="tile g">с</div><div class="tile y">л</div><div class="tile">о</div><div class="tile x">в</div><div class="tile g">о</div></div>`,
+    vertikal: `<div class="row">${["вода", "кино", "мост", "рука"].map((w, c) => `<div class="col">${[...w].map((ch, r) => `<div class="tile ${["g", "", "y", "x"][(r + c) % 4]}">${ch}</div>`).join("")}</div>`).join("")}</div>`,
+    chetyre: `<div class="quad">${[0, 1, 2, 3].map((b) => `<div class="col" style="--ts:12px;gap:2px">${[0, 1, 2].map((r) => `<div class="row">${[0, 1, 2, 3, 4].map((i) => `<div class="tile ${r === 2 && b === 1 ? "g" : ["x", "y", "g", "", "x"][(i + r + b) % 5]}"></div>`).join("")}</div>`).join("")}</div>`).join("")}</div>`,
+    lesenka: `<div class="stair">${["коза", "коса", "роса", "роза"].map((w, i, a) => `<div class="row" style="margin-left:${i * 10}px">${[...w].map((ch, j) => `<div class="tile ${i === 3 ? "g" : i && ch !== a[i - 1][j] ? "y" : ""}">${ch}</div>`).join("")}</div>`).join("")}</div>`,
+    soty: `<div class="hexes">${[["к", 35, 33, "c"], ["о", 35, 0], ["т", 62, 16], ["л", 62, 49], ["е", 35, 66], ["с", 8, 49], ["а", 8, 16]].map(([ch, x, y, c]) => `<span class="${c || ""}" style="left:${x}px;top:${y}px">${ch}</span>`).join("")}</div>`,
+    chisla: `<div class="row t">${[["1", "g"], ["2", "x"], ["+", "y"], ["3", ""], ["5", "g"], ["=", "g"], ["4", "y"], ["7", "x"]].map(([c, s]) => `<div class="tile ${s}" style="--ts:22px">${c}</div>`).join("")}</div>`,
+    flag: `<div class="flagart"><i class="f1"></i><i class="q">?</i><i class="q">?</i><i class="q">?</i><i class="f2"></i><i class="q">?</i></div>`,
+    kontur: `<svg width="110" height="90" viewBox="0 0 110 90"><path d="M18 30 L34 14 L52 20 L66 8 L88 18 L96 36 L84 50 L90 70 L70 82 L58 70 L40 78 L26 64 L30 48 Z" fill="rgba(255,255,255,0.92)" stroke="rgba(0,0,0,0.15)" stroke-width="3" stroke-linejoin="round"/></svg>`,
+    strana: `<div class="table">${[["g", "y", "", "g"], ["y", "g", "y", ""], ["g", "g", "g", "g"]].map((r) => `<div class="row">${r.map((s, i) => `<span class="${s}">${["Азия", "↑", "↓", "↗"][i]}</span>`).join("")}</div>`).join("")}</div>`,
+    globus: `<div class="globe"></div>`,
+  };
+
+  // Статус сегодняшнего задания.
+  function status(g) {
+    const st = C.store.get(g.id + ":day", null);
+    if (!st || st.day !== day) return { txt: "Ещё не сыграно", cls: "" , state: "" };
+    if (st.statusText) return { txt: st.statusText, cls: st.done ? "done" : "go", state: st.done ? "on" : "" };
+    if (st.done) return st.won ? { txt: "✓ Решено", cls: "done", state: "on" } : { txt: "✕ Не вышло", cls: "lost", state: "off" };
+    return { txt: "Начато — продолжи", cls: "go", state: "" };
+  }
+
+  const cats = document.getElementById("cats");
+  const today = document.getElementById("today");
+  let tickTimer = null;
+
+  // Статусы читаются из localStorage при каждом показе страницы: при «Назад» браузер
+  // достаёт главную из кэша (bfcache) без перезапуска скрипта, и без этого она показала бы старое.
+  function render() {
+  day = C.dayNumber();
+  cats.innerHTML = "";
+  today.innerHTML = "";
+  const order = [...new Set(C.GAMES.map((g) => g.cat))];
+  const hint = { "Слова": "угадывай, собирай, меняй буквы", "Числа": "арифметика вместо букв", "География": "флаги, силуэты и карта мира" };
+  let solved = 0;
+  const marks = [];
+  order.forEach((cat) => {
+    const head = C.el("div", "cat");
+    head.appendChild(C.el("h2", null, cat));
+    head.appendChild(C.el("span", null, hint[cat] || ""));
+    cats.appendChild(head);
+    const box = C.el("div", "cards");
+    C.GAMES.filter((g) => g.cat === cat).forEach((g) => {
+      const a = C.el("a", "card");
+      a.href = g.id + "/index.html";
+      a.style.setProperty("--game", g.accent);
+      const art = C.el("div", "art");
+      art.innerHTML = ART[g.id] || "";
+      a.appendChild(art);
+      const body = C.el("div", "body");
+      body.appendChild(C.el("h3", null, g.name));
+      body.appendChild(C.el("p", null, g.desc));
+      const s = status(g);
+      const stats = C.loadStats(g.id);
+      body.appendChild(C.el("span", "chip " + s.cls, s.txt + (stats.streak > 1 ? " · серия " + stats.streak : "")));
+      a.appendChild(body);
+      box.appendChild(a);
+      if (s.state === "on") solved++;
+      marks.push(s.state);
+    });
+    cats.appendChild(box);
+  });
+
+  const date = new Date(Date.now() + 3 * 3600 * 1000);
+  const timer = C.el("b");
+  const prog = C.el("span", "progress");
+  marks.forEach((m) => prog.appendChild(C.el("i", m)));
+  today.append(
+    C.el("span", null, "№" + day + " · " + date.toLocaleDateString("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" })),
+    C.el("span", "sep"),
+    prog,
+    C.el("span", null, solved + " из " + C.GAMES.length),
+    C.el("span", "sep"),
+    C.el("span", null, "новые через"),
+    timer
+  );
+  const tick = () => {
+    const s = Math.floor(C.msToNextDay() / 1000);
+    const p = (n) => String(n).padStart(2, "0");
+    timer.textContent = p(Math.floor(s / 3600)) + ":" + p(Math.floor((s % 3600) / 60)) + ":" + p(s % 60);
+  };
+  tick();
+  clearInterval(tickTimer);
+  tickTimer = setInterval(tick, 1000);
+  }
+
+  // Открыто прямо с диска: Firefox даёт каждому файлу своё хранилище, и главная не видит прогресс игр.
+  if (location.protocol === "file:") {
+    const warn = C.el("div", "file-warn");
+    warn.innerHTML = "Сайт открыт как файл с диска — так браузер может не показывать здесь твой прогресс. " +
+      "Запусти <b>Запустить.bat</b> в папке сайта: он откроет его по адресу <b>localhost:8765</b>.";
+    document.querySelector(".hero").after(warn);
+  }
+
+  // Сброс: стираем сегодняшние прохождения и статистику всех игр (подсказки «Как играть» не трогаем).
+  function resetAll() {
+    if (!confirm("Сбросить прохождения и статистику всех игр в этом браузере?")) return false;
+    try {
+      Object.keys(localStorage)
+        .filter((k) => k.startsWith("igry:") && !k.startsWith("igry:seen:"))
+        .forEach((k) => localStorage.removeItem(k));
+    } catch (e) {}
+    render();
+    C.toast("Прогресс сброшен");
+    return true;
+  }
+  document.getElementById("reset").onclick = resetAll;
+  // index.html?reset — то же самое по ссылке (с подтверждением).
+  if (new URLSearchParams(location.search).has("reset")) {
+    history.replaceState(null, "", location.pathname);
+    setTimeout(resetAll, 300);
+  }
+
+  render();
+  window.addEventListener("pageshow", (e) => e.persisted && render());
+  // Игра в соседней вкладке тоже обновит главную.
+  window.addEventListener("storage", render);
+  document.addEventListener("visibilitychange", () => document.visibilityState === "visible" && render());
+})();
+</script>
+</body>
+</html>
