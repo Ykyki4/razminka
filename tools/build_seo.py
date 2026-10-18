@@ -1,8 +1,8 @@
 """SEO: заголовки, описания, превью ссылок (Open Graph) и sitemap.xml.
 
 Тексты лежат в tools/seo.json. Скрипт вписывает в <head> каждой страницы блок
-между <!-- seo --> и <!-- /seo --> (прежний блок, <title> и description заменяет)
-и пересобирает sitemap.xml. Картинки превью рисует tools/build_og.js.
+между <!-- seo --> и <!-- /seo --> (прежний блок, <title> и description заменяет),
+подключает Яндекс Метрику (номер счётчика — тоже в seo.json) и пересобирает sitemap.xml. Картинки превью рисует tools/build_og.js.
 
 Запуск: python tools/build_seo.py
 """
@@ -43,10 +43,26 @@ def block(slug, p):
         '<meta name="twitter:card" content="summary_large_image">',
         '<meta name="theme-color" content="#f4efe6">',
         '<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False) + "</script>",
-        "<!-- /seo -->",
     ]
+    if cfg.get("yandex_verification"):
+        lines.append(f'<meta name="yandex-verification" content="{a(cfg["yandex_verification"])}">')
+    if cfg.get("metrika"):
+        lines.append(METRIKA.replace("@COUNTER@", str(cfg["metrika"])))
+    lines.append("<!-- /seo -->")
     return "\n".join(lines) + "\n"
 
+
+# Яндекс Метрика — только на боевом сайте, чтобы локальные тесты не портили статистику.
+METRIKA = """<script>
+if (location.hostname.endsWith("github.io")) {
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+  })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js?id=@COUNTER@", "ym");
+  ym(@COUNTER@, "init", {ssr:true, webvisor:true, clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+}
+window.METRIKA_ID = @COUNTER@;
+</script>"""
 
 urls = []
 for slug, p in cfg["pages"].items():

@@ -73,6 +73,7 @@
   function recordResult(game, day, result) {
     const s = loadStats(game);
     if (s.lastDay === day) return s; // уже учтено
+    goal("finish", { game, won: result != null });
     s.lastDay = day;
     s.played++;
     if (result != null) {
@@ -118,7 +119,13 @@
     node.classList.add("shake");
   }
 
+  // Цель в Яндекс Метрике (если счётчик подключён — см. tools/build_seo.py).
+  function goal(name, params) {
+    try { if (window.ym && window.METRIKA_ID) window.ym(window.METRIKA_ID, "reachGoal", name, params); } catch (e) {}
+  }
+
   async function share(text) {
+    goal("share", { game: location.pathname.split("/").filter(Boolean).pop() });
     try {
       if (navigator.share && matchMedia("(pointer: coarse)").matches) {
         await navigator.share({ text });
