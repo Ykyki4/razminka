@@ -26,6 +26,10 @@
 
   const pz = makePuzzle(practice ? Math.floor(C.mulberry32(pseed)() * 1e9) : day - 1);
   const answers = new Set(pz.words);
+  C.answer(() => {
+    const pangrams = pz.words.filter((w) => new Set(w).size === pz.set.size);
+    return `всего слов: ${pz.words.length}, все буквы сразу: ${pangrams.join(", ")}`;
+  });
   const maxScore = pz.words.reduce((s, w) => s + points(w, pz.set), 0);
 
   const saved = practice ? null : C.store.get(GAME + ":day", null);

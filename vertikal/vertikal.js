@@ -11,6 +11,7 @@
   const solution = practice
     ? answers[Math.floor(C.mulberry32(pseed ^ 0x5bd1e995)() * answers.length)]
     : answers[(day - 1 + 389) % answers.length];
+  C.answer(solution);
 
   const saved = practice ? null : C.store.get(GAME + ":day", null);
   const st = saved && saved.day === day ? saved : { day, guesses: [], done: false, won: false };

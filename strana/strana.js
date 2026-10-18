@@ -9,6 +9,7 @@
   const day = C.dayNumber();
   const pool = G.LIST.filter((c) => c.pop >= 1000000);
   const answer = G.pick(GAME, pool, day, pseed, 0x57a4a);
+  C.answer(answer.n);
 
   const saved = practice ? null : C.store.get(GAME + ":day", null);
   const st = saved && saved.day === day ? saved : { day, guesses: [], done: false, won: false };

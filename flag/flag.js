@@ -9,6 +9,7 @@
   const day = C.dayNumber();
   const pool = G.LIST.filter((c) => c.flag && c.pop >= 500000);
   const answer = G.pick(GAME, pool, day, pseed, 0x0f1a6);
+  C.answer(answer.n);
 
   // Порядок, в котором открываются кусочки флага, — тоже от дня.
   const order = C.seededShuffle([0, 1, 2, 3, 4, 5], (practice ? pseed : day) * 31 + 7);

@@ -73,6 +73,7 @@
   }
 
   const solution = generate(practice ? pseed : Math.imul(day, 0x2c1b3c6d) ^ 0x51ed27);
+  C.answer(solution);
 
   const saved = practice ? null : C.store.get(GAME + ":day", null);
   const st = saved && saved.day === day ? saved : { day, guesses: [], done: false, won: false };

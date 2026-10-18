@@ -19,6 +19,7 @@
   } else {
     sols = Array.from({ length: B }, (_, i) => answers[((day - 1) * B + i + 701) % answers.length]);
   }
+  C.answer(sols.join(", "));
 
   const saved = practice ? null : C.store.get(GAME + ":day", null);
   const st = saved && saved.day === day ? saved : { day, guesses: [], done: false, won: false };

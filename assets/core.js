@@ -459,6 +459,12 @@
 
   const EMOJI = { correct: "🟩", present: "🟨", absent: "⬛" };
 
+  // Игра сообщает ответ дня (строкой или функцией, которая его посчитает). На странице ничего
+  // не делает; tools/telegram_post.js запускает код игры с ANSWER_ONLY и так узнаёт ответ.
+  function answer(value) {
+    if (window.ANSWER_ONLY) throw { answer: typeof value === "function" ? value() : value };
+  }
+
   function practiceSeed() {
     const p = new URLSearchParams(location.search).get("practice");
     if (p == null) return null;
@@ -470,7 +476,7 @@
   window.Core = {
     dayNumber, msToNextDay, mulberry32, norm, dict, store, loadStats, recordResult,
     el, toast, shake, share, modal, closeModal, showStats, showHelp, header, keyboard,
-    score, EMOJI, practiceSeed, GAMES, SITE, seededShuffle, toCyr, moreGames, icon,
+    score, EMOJI, practiceSeed, answer, GAMES, SITE, seededShuffle, toCyr, moreGames, icon,
     siteUrl: () => location.origin + location.pathname.replace(/[^/]*\/[^/]*$/, ""),
   };
 })();

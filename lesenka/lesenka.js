@@ -56,6 +56,14 @@
   const { start, target } = makePuzzle(practice ? pseed : Math.imul(day, 2654435761) ^ 0x9e3779b9);
   const distToTarget = bfs(target); // от любого слова до цели — для подсказок и минимума
   const best = distToTarget.get(start);
+  C.answer(() => {
+    const path = [start];
+    while (path[path.length - 1] !== target) {
+      const w = path[path.length - 1];
+      path.push(neighbors(w).find((x) => distToTarget.get(x) === distToTarget.get(w) - 1));
+    }
+    return path.join(" → ");
+  });
 
   const saved = practice ? null : C.store.get(GAME + ":day", null);
   const st =
