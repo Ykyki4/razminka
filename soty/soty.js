@@ -3,6 +3,8 @@
   const C = window.Core;
   const GAME = "soty";
   const WORDS = window.SOTY.split(" ");
+  // Редкие слова принимаются бонусом: дают очки, но в «из N слов» и цель дня не входят.
+  const EXTRA = new Set((window.SOTY_EXTRA || "").split(" "));
   const RANKS = [
     ["Новичок", 0], ["Неплохо", 2], ["В пути", 5], ["Хорошо", 8], ["Уверенно", 15],
     ["Отлично", 25], ["Здорово", 40], ["Блестяще", 50], ["Гений", 70],
@@ -148,11 +150,13 @@
     [...rankBar.children].forEach((d, i) => d.classList.toggle("on", i <= r));
     const next = RANKS[r + 1];
     rankScore.textContent = next ? `${sc} очк. · до «${next[0]}» ещё ${Math.ceil((next[1] / 100) * maxScore) - sc}` : `${sc} очк.`;
-    foundSum.textContent = `Найдено слов: ${st.found.length} из ${pz.words.length}`;
+    const rare = st.found.filter((w) => !answers.has(w)).length;
+    foundSum.textContent = `Найдено слов: ${st.found.length - rare} из ${pz.words.length}` + (rare ? ` + редких: ${rare}` : "");
     foundList.innerHTML = "";
-    const show = st.revealed ? pz.words : st.found.slice().sort((a, b) => a.localeCompare(b, "ru"));
+    const show = st.revealed ? [...pz.words, ...st.found.filter((w) => !answers.has(w))] : st.found.slice().sort((a, b) => a.localeCompare(b, "ru"));
     show.forEach((w) => {
-      const s = C.el("span", (st.found.includes(w) ? "got" : "miss") + (new Set(w).size === 7 ? " pan" : ""), w);
+      const s = C.el("span", (st.found.includes(w) ? "got" : "miss") + (new Set(w).size === 7 ? " pan" : "") + (answers.has(w) ? "" : " rare"), w);
+      if (!answers.has(w)) s.title = "Редкое слово — бонус";
       foundList.appendChild(s);
     });
     reveal.hidden = st.revealed;
@@ -182,7 +186,8 @@
     if ([...cur].some((ch) => !pz.set.has(ch))) return fail("Есть лишние буквы");
     if (!cur.includes(pz.center)) return fail("Нет центральной буквы");
     if (st.found.includes(cur)) return fail("Уже найдено");
-    if (!answers.has(cur)) return fail("Нет в словаре");
+    const rare = !answers.has(cur);
+    if (rare && !EXTRA.has(cur)) return fail("Нет в словаре");
     const before = rankOf(score());
     st.found.push(cur);
     const p = points(cur, pz.set);
@@ -191,7 +196,7 @@
     save();
     render();
     const after = rankOf(score());
-    C.toast(pan ? `Панграмма! +${p}` : `+${p}`);
+    C.toast(pan ? `Панграмма! +${p}` : rare ? `Редкое слово! +${p}` : `+${p}`);
     if (after > before) setTimeout(() => C.toast("Новый ранг: " + RANKS[after][0], 1800), 600);
   }
 
@@ -209,7 +214,8 @@
     const sum = C.el("div", "summary");
     sum.appendChild(C.el("div", null, practice ? "Тренировка" : "Сегодня"));
     sum.appendChild(C.el("div", "word", RANKS[rankOf(score())][0]));
-    sum.appendChild(C.el("div", null, `${st.found.length} из ${pz.words.length} слов · ${score()} из ${maxScore} очков`));
+    const common = st.found.filter((w) => answers.has(w)).length;
+    sum.appendChild(C.el("div", null, `${common} из ${pz.words.length} слов` + (common < st.found.length ? ` + редких: ${st.found.length - common}` : "") + ` · ${score()} очков из ${maxScore}`));
     body.appendChild(sum);
     const nums = C.el("div", "stat-nums");
     [[days, "дней играл"], [geniuses, "раз «Гений»"], [pz.words.filter((w) => new Set(w).size === 7).length, "панграмм сегодня"], [maxScore, "макс. очков"]].forEach(([v, l]) => {
@@ -240,6 +246,7 @@
         <li>Только существительные в начальной форме, без имён и названий.</li>
        </ul>
        <p>Очки: слово из 4 букв — 1 очко, длиннее — по очку за букву. <b>Панграмма</b> — слово со всеми семью буквами — ещё +7.</p>
+       <p>Редкие слова тоже засчитываются и дают очки, но в число слов дня не входят — это бонус.</p>
        <p>Набирай очки и поднимайся по рангам до «Гения». Кнопка ⟳ (или пробел) перемешивает буквы.</p>`
     );
   }

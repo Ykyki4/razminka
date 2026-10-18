@@ -40,16 +40,18 @@ def main():
     nouns = {w for w in nouns if is_ru(w)}
 
     rank = {}
+    attested = set()  # встречались в субтитрах хоть раз — для бонусных слов «Сот»
     with open(RAW / "freq_full.txt", encoding="utf-8") as f:
         for i, line in enumerate(f):
-            if i >= FREQ_LIMIT:
-                break
-            rank.setdefault(norm(line.split()[0]), i)
+            w = norm(line.split()[0])
+            attested.add(w)
+            if i < FREQ_LIMIT:
+                rank.setdefault(w, i)
 
     morph = pymorphy3.MorphAnalyzer()
 
-    def good_answer(w):
-        if w in BLACKLIST or w not in rank:
+    def good_answer(w, frequent=True):
+        if w in BLACKLIST or (frequent and w not in rank):
             return False
         p = morph.parse(w)[0]
         t = p.tag
@@ -84,6 +86,11 @@ def main():
 
     # «Соты»: все частые существительные от 4 букв + заранее выбранные задания по дням.
     soty = sorted(w for w in nouns if len(w) >= 4 and good_answer(w))
+    # Редкие слова «Соты» тоже принимают — бонусом, в цель дня и ранги они не входят: любое
+    # годное существительное, которое хоть раз встретилось в частотнике и влезает в 7 букв.
+    soty_set = set(soty)
+    extra = sorted(w for w in nouns if len(w) >= 4 and len(set(w)) <= 7 and w not in soty_set
+                   and w in attested and good_answer(w, frequent=False))
     soty_path = ROOT / "data" / "soty.js"
     prev_puzzles = load_js(soty_path, "window.SOTY_PUZZLES = ") or []
     puzzles = soty_puzzles(soty, prev_puzzles)
@@ -91,10 +98,12 @@ def main():
         "// Сгенерировано tools/build_dict.py — не править руками.\n"
         "window.SOTY = " + json.dumps(" ".join(soty), ensure_ascii=False) + ";\n"
         "// [центральная буква, остальные шесть] на каждый день по порядку.\n"
-        "window.SOTY_PUZZLES = " + json.dumps(puzzles, ensure_ascii=False) + ";\n",
+        "window.SOTY_PUZZLES = " + json.dumps(puzzles, ensure_ascii=False) + ";\n"
+        "// Редкие слова: принимаются бонусом, в цель дня и ранги не входят.\n"
+        "window.SOTY_EXTRA = " + json.dumps(" ".join(extra), ensure_ascii=False) + ";\n",
         encoding="utf-8",
     )
-    print(f"соты: слов {len(soty)}, заданий {len(puzzles)} (было {len(prev_puzzles)})")
+    print(f"соты: слов {len(soty)}, редких {len(extra)}, заданий {len(puzzles)} (было {len(prev_puzzles)})")
 
 
 def load_js(path, prefix):
