@@ -32,7 +32,7 @@ window.METRIKA_ID = 113666309;
 </script>
 <!-- /seo -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%232f9e6b%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-size=%2220%22 font-family=%22Arial%22 font-weight=%22900%22 text-anchor=%22middle%22 fill=%22white%22%3E%D0%A0%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/style.css?v=202610181846">
+<link rel="stylesheet" href="assets/style.css?v=202610181856">
 <style>
   .hub { max-width: 1040px; margin: 0 auto; padding: 28px 16px 56px; width: 100%; }
   .hero { text-align: center; margin: 18px 0 30px; }
@@ -133,6 +133,7 @@ window.METRIKA_ID = 113666309;
     font-weight: 600; font-size: 0.92rem; text-align: center;
   }
   .link-btn { border: 0; background: none; color: var(--muted); font-weight: 700; text-decoration: underline; font-size: 0.85rem; margin-top: 8px; }
+  #tg .tg-btn { display: inline-flex; margin-top: 14px; }
   .hub-foot { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 40px; font-weight: 600; }
 </style>
 </head>
@@ -142,16 +143,18 @@ window.METRIKA_ID = 113666309;
     <div class="logo" id="logo"></div>
     <p class="tag">Десять коротких головоломок каждый день — со словами, числами и картой мира. Всё на русском.</p>
     <div class="today" id="today"></div>
+    <div id="tg"></div>
   </div>
   <div id="cats"></div>
   <p class="hub-foot">Новые задания каждый день в 00:00 по Москве · Прогресс хранится в этом браузере<br>
     <button class="link-btn" id="reset">Сбросить прогресс</button></p>
 </div>
-<script src="assets/core.js?v=202610181846"></script>
+<script src="assets/core.js?v=202610181856"></script>
 <script>
 (function () {
   const C = window.Core;
   let day = C.dayNumber();
+  document.getElementById("tg").appendChild(C.tgLink());
 
   // Логотип из плиток.
   const logo = document.getElementById("logo");

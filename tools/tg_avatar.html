@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<!-- Аватарки Telegram 640×640: tg_avatar.html?kind=channel | chat. Снимает tools/build_og.js.
+     Telegram обрезает картинку кругом — всё важное держим в центре. -->
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  html, body { margin: 0; width: 640px; height: 640px; overflow: hidden; }
+  body { background: var(--bg) radial-gradient(var(--bg-dot) 3px, transparent 3px) 0 0 / 40px 40px; position: relative; }
+  .t { position: absolute; display: grid; place-items: center; color: #fff; font-family: var(--display); font-weight: 900;
+       box-shadow: inset 0 -18px 0 rgba(0,0,0,.15), 0 16px 40px rgba(60,40,10,.18); }
+  .g { background: var(--correct); } .y { background: var(--present); } .a { background: var(--absent); }
+  /* канал: большая плитка «Р» и две маленьких — как в логотипе */
+  .main { left: 150px; top: 150px; width: 340px; height: 340px; border-radius: 76px; font-size: 230px; padding-bottom: 14px; box-sizing: border-box; }
+  .s1 { left: 418px; top: 112px; width: 112px; height: 112px; border-radius: 28px; transform: rotate(10deg); box-shadow: inset 0 -8px 0 rgba(0,0,0,.15); }
+  .s2 { left: 104px; top: 420px; width: 92px; height: 92px; border-radius: 24px; transform: rotate(-12deg); box-shadow: inset 0 -7px 0 rgba(0,0,0,.15); }
+  /* чат: облачко с «Р» и жёлтое облачко с многоточием */
+  .bubble { left: 120px; top: 140px; width: 330px; height: 290px; border-radius: 80px; font-size: 200px; padding-bottom: 14px; box-sizing: border-box; }
+  .bubble::before { content: ""; position: absolute; left: 46px; bottom: -34px; width: 0; height: 0; border-left: 30px solid var(--correct); border-bottom: 52px solid transparent; border-right: 34px solid transparent; }
+  .reply { left: 356px; top: 336px; width: 184px; height: 132px; border-radius: 48px; display: flex; align-items: center; justify-content: center; gap: 18px; padding-bottom: 8px; box-sizing: border-box; transform: rotate(-4deg); }
+  .reply::before { content: ""; position: absolute; right: 34px; bottom: -30px; width: 0; height: 0; border-right: 26px solid var(--present); border-bottom: 44px solid transparent; border-left: 28px solid transparent; }
+  .reply i { width: 26px; height: 26px; border-radius: 50%; background: #fff; }
+</style>
+</head>
+<body>
+<script>
+  const kind = new URLSearchParams(location.search).get("kind");
+  document.body.innerHTML = kind === "chat"
+    ? '<div class="t g bubble">Р</div><div class="t y reply"><i></i><i></i><i></i></div>'
+    : '<div class="t y s1"></div><div class="t a s2"></div><div class="t g main">Р</div>';
+</script>
+</body>
+</html>

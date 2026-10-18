@@ -240,6 +240,7 @@
       const box = el("div", "more all-done");
       box.appendChild(el("b", null, "Все игры на сегодня пройдены 🎉"));
       box.appendChild(el("span", null, "Возвращайся завтра — будут новые задания."));
+      box.appendChild(tgLink("Напомним утром о новых заданиях"));
       return box;
     }
     const box = el("div", "more");
@@ -258,6 +259,7 @@
       list.appendChild(a);
     });
     box.appendChild(list);
+    box.appendChild(tgLink());
     return box;
   }
 
@@ -280,6 +282,22 @@
     strana: '<path d="M12 22s7-6.3 7-12.2A7 7 0 0 0 5 9.8C5 15.7 12 22 12 22z" fill="currentColor"/><circle cx="12" cy="9.8" r="2.6" fill="#000" fill-opacity=".25"/>',
     globus: '<circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="12" cy="12" rx="4" ry="9.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2.8 9h18.4M2.8 15h18.4" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="8" r="2.4" fill="currentColor"/>',
   };
+  // Telegram-канал: утром — задания, днём — вчерашние ответы (tools/telegram_post.js).
+  const TELEGRAM = "https://t.me/razminkadnya";
+  const TG_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 4.2 2.9 11.3c-1.1.4-1.1 1.1-.2 1.4l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.7c.3-1.3-.5-1.9-1.5-1.5zM9.6 14.4l8.7-7.9c.4-.3-.1-.5-.6-.2L7.9 13.1z" fill="currentColor"/></svg>';
+  function tgLink(sub) {
+    const a = el("a", "tg-btn");
+    a.href = TELEGRAM;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.innerHTML = TG_ICON;
+    const txt = el("span");
+    txt.appendChild(el("b", null, "Наш Telegram"));
+    txt.appendChild(el("small", null, sub || "Задания по утрам, ответы — днём"));
+    a.appendChild(txt);
+    return a;
+  }
+
   const icon = (id) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[id] || ""}</svg>`;
 
   // Все игры сайта: порядок = порядок на главной.
@@ -476,7 +494,7 @@
   window.Core = {
     dayNumber, msToNextDay, mulberry32, norm, dict, store, loadStats, recordResult,
     el, toast, shake, share, modal, closeModal, showStats, showHelp, header, keyboard,
-    score, EMOJI, practiceSeed, answer, GAMES, SITE, seededShuffle, toCyr, moreGames, icon,
+    score, EMOJI, practiceSeed, answer, GAMES, SITE, seededShuffle, toCyr, moreGames, icon, tgLink, TELEGRAM,
     siteUrl: () => location.origin + location.pathname.replace(/[^/]*\/[^/]*$/, ""),
   };
 })();
