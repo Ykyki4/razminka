@@ -1,0 +1,20 @@
+# Ежедневный пост в Telegram-канал. Секреты репозитория: TG_TOKEN (токен бота), TG_CHAT (@канал).
+name: Telegram
+
+on:
+  schedule:
+    - cron: "1 21 * * *" # 00:01 по Москве (GitHub может запустить с опозданием до получаса)
+  workflow_dispatch: # кнопка «Run workflow» — опубликовать прямо сейчас
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tools/telegram_post.js
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
