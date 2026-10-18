@@ -294,7 +294,7 @@
   function header(opts) {
     const game = GAMES.find((g) => g.id === opts.id);
     if (game) document.documentElement.style.setProperty("--game", game.accent);
-    document.title = opts.title + " — " + SITE;
+    if (!document.title) document.title = opts.title + " — " + SITE; // SEO-заголовок из <head> не трогаем
     const h = el("header", "topbar");
     const brand = el("a", "brand");
     brand.href = "../index.html";

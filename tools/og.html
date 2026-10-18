@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<!-- Шаблон картинки превью 1200×630. og.html?id=<игра> или без id — главная. Снимает tools/build_og.js. -->
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body { background: var(--bg) radial-gradient(var(--bg-dot) 2px, transparent 2px) 0 0 / 28px 28px; color: var(--text); font-family: var(--body, "Manrope", sans-serif); }
+  .card { position: absolute; inset: 0; padding: 64px 72px; display: flex; flex-direction: column; box-sizing: border-box; }
+  .bar { position: absolute; left: 0; right: 0; top: 0; height: 14px; background: var(--game); }
+  .row { display: flex; align-items: center; gap: 48px; flex: 1; }
+  .big { width: 230px; height: 230px; border-radius: 52px; background: var(--game); color: #fff; display: grid; place-items: center; flex: none;
+         box-shadow: inset 0 -12px 0 rgba(0,0,0,.15), 0 18px 50px rgba(60,40,10,.18); }
+  .big svg { width: 150px; height: 150px; }
+  .cat { font: 800 26px var(--display); color: var(--game); text-transform: uppercase; letter-spacing: .08em; }
+  h1 { font: 800 92px/1.02 var(--display); margin: 10px 0 22px; letter-spacing: -0.02em; }
+  .desc { font: 600 34px/1.3 "Manrope", sans-serif; color: var(--muted); max-width: 760px; }
+  .foot { display: flex; align-items: center; justify-content: space-between; }
+  .logo { display: flex; gap: 6px; --ts: 46px; }
+  .logo .tile { font-weight: 900; }
+  .foot span { font: 700 26px "Manrope", sans-serif; color: var(--muted); }
+  /* главная */
+  .hub { align-items: center; justify-content: center; text-align: center; gap: 34px; }
+  .hub .logo { --ts: 112px; gap: 10px; }
+  .hub .tag { font: 700 40px "Manrope", sans-serif; color: var(--muted); }
+  .icons { display: flex; gap: 18px; }
+  .icons div { width: 82px; height: 82px; border-radius: 20px; display: grid; place-items: center; color: #fff; box-shadow: inset 0 -5px 0 rgba(0,0,0,.15); }
+  .icons svg { width: 50px; height: 50px; }
+</style>
+</head>
+<body>
+<script src="../assets/core.js"></script>
+<script>
+  const C = window.Core;
+  const id = new URLSearchParams(location.search).get("id");
+  const g = C.GAMES.find((x) => x.id === id);
+  const logo = (word) => {
+    const states = ["correct", "present", "absent", "correct", "", "present", "correct", "absent"];
+    const box = C.el("div", "logo");
+    [...word].forEach((ch, i) => { const t = C.el("div", "tile", ch); if (states[i]) t.dataset.state = states[i]; box.appendChild(t); });
+    return box;
+  };
+  const card = C.el("div", "card");
+  if (g) {
+    document.documentElement.style.setProperty("--game", g.accent);
+    card.innerHTML = `<div class="bar"></div><div class="row"><div class="big">${C.icon(g.id)}</div>
+      <div><div class="cat">${g.cat}</div><h1>${g.name}</h1><div class="desc">${g.desc}</div></div></div>
+      <div class="foot"></div>`;
+    card.querySelector(".foot").append(logo("разминка"), C.el("span", "", "Новая головоломка каждый день"));
+  } else {
+    card.classList.add("hub");
+    card.append(logo("разминка"), C.el("div", "tag", "10 ежедневных головоломок на русском"));
+    const icons = C.el("div", "icons");
+    for (const x of C.GAMES) { const d = C.el("div"); d.style.background = x.accent; d.innerHTML = C.icon(x.id); icons.appendChild(d); }
+    card.appendChild(icons);
+  }
+  document.body.appendChild(card);
+</script>
+</body>
+</html>

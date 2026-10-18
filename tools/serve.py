@@ -8,6 +8,7 @@ import http.server
 import sys
 from pathlib import Path
 
+sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(__file__).resolve().parent.parent
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
 

@@ -4,6 +4,7 @@
 
 ## Запуск и выкладка
 - **Локально:** `Запустить.bat` (или `python tools/serve.py`) → http://localhost:8765/. Открывать `index.html` прямо с диска не стоит: Firefox даёт каждому файлу своё хранилище, и главная не видит прогресс игр.
+- **SEO и превью ссылок:** тексты — в `tools/seo.json`; `python tools/build_seo.py` вписывает мета-теги в страницы и пересобирает `sitemap.xml`, картинки `assets/og/*.png` рисует `cd tools && node build_og.js` (при запущенном `serve.py`).
 - **Выкладка:** `python tools/version.py` (метки `?v=` против старого кэша у игроков), затем `git commit` и `git push` — GitHub Pages обновится сам за минуту-две.
 
 | Папка | Игра | Прототип |

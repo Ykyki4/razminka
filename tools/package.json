@@ -16,5 +16,8 @@
     "topojson-client": "^3.1.0",
     "topojson-simplify": "^3.0.3",
     "world-atlas": "^2.0.2"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^23.11.1"
   }
 }
