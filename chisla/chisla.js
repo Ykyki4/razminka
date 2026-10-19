@@ -80,7 +80,7 @@
   let cur = "";
   let busy = false;
 
-  C.header({ id: GAME, title: "Числа", day, practice, onHelp: help, onStats: stats });
+  C.header({ id: GAME, title: "Равенство", day, practice, onHelp: help, onStats: stats });
   const main = document.querySelector("main");
   const board = C.el("div", "board");
   const rows = [];
@@ -177,7 +177,7 @@
 
   function shareText() {
     const grid = st.guesses.map((g) => C.score(g, solution).map((s) => C.EMOJI[s]).join("")).join("\n");
-    return `Числа №${day} ${st.won ? st.guesses.length : "✕"}/${TRIES}\n${grid}\n${C.siteUrl()}`;
+    return `Равенство №${day} ${st.won ? st.guesses.length : "✕"}/${TRIES}\n${grid}\n${C.siteUrl()}`;
   }
 
   function stats() {

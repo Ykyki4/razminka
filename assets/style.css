@@ -238,12 +238,20 @@ main.game {
 .dist-k { min-width: 18px; text-align: right; white-space: nowrap; }
 .dist-bar { background: var(--absent); color: var(--on-color); text-align: right; padding: 1px 6px; font-weight: 800; border-radius: 5px; }
 .dist-bar.hl { background: var(--game); }
-.stats-foot {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line);
+.share-box {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  margin-top: 16px; padding: 14px; border-radius: 16px; background: var(--bg);
 }
-.next span { display: block; font-size: 0.8rem; color: var(--muted); }
-.next b { font: 700 1.3rem var(--display); font-variant-numeric: tabular-nums; }
+.share-preview {
+  margin: 0; font: 600 0.95rem/1.25 var(--body, inherit); text-align: center; white-space: pre-wrap;
+  max-height: 11em; overflow: hidden;
+}
+.share-btn { width: 100%; font-size: 1.05rem; padding: 14px; }
+.share-note { font-size: 0.75rem; color: var(--muted); }
+.stats-foot { display: flex; justify-content: center; margin-top: 10px; }
+.next { display: flex; align-items: baseline; gap: 8px; }
+.next span { font-size: 0.85rem; color: var(--muted); }
+.next b { font: 700 1.1rem var(--display); font-variant-numeric: tabular-nums; }
 .summary { text-align: center; margin: 10px 0 0; }
 .summary .word { font: 900 1.4rem var(--display); letter-spacing: 0.04em; text-transform: uppercase; }
 

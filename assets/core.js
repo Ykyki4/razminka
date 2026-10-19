@@ -143,6 +143,19 @@
     }
   }
 
+  // Блок «Поделиться»: превью того, что уйдёт другу (без ссылки), и крупная кнопка.
+  function shareBox(text) {
+    const box = el("div", "share-box");
+    const lines = text.split("\n");
+    if (/^https?:/.test(lines[lines.length - 1])) lines.pop();
+    box.appendChild(el("pre", "share-preview", lines.join("\n")));
+    const btn = el("button", "btn primary share-btn", "Поделиться результатом");
+    btn.onclick = () => share(text);
+    box.appendChild(btn);
+    box.appendChild(el("span", "share-note", "Без спойлеров — друзья смогут сыграть сами"));
+    return box;
+  }
+
   function modal(title, body) {
     closeModal();
     const back = el("div", "modal-back");
@@ -190,9 +203,7 @@
         t.textContent = fmtTime(msToNextDay());
       }, 1000);
       foot.appendChild(timer);
-      const btn = el("button", "btn primary", "Поделиться");
-      btn.onclick = () => share(opts.shareText());
-      foot.appendChild(btn);
+      body.appendChild(shareBox(opts.shareText()));
       body.appendChild(foot);
       body.appendChild(moreGames(game));
     }
@@ -249,7 +260,7 @@
     const list = el("div", "more-grid");
     left.forEach(({ g, started }) => {
       const a = el("a", "more-item");
-      a.href = "../" + g.id + "/index.html";
+      a.href = "../" + g.id + "/";
       a.title = g.desc;
       a.style.setProperty("--game", g.accent);
       const ic = el("span", "more-icon");
@@ -309,7 +320,7 @@
     { id: "chetyre", name: "Четыре слова", cat: "Слова", accent: "#e2683a", desc: "Четыре слова разом, 9 попыток на все." },
     { id: "lesenka", name: "Лесенка", cat: "Слова", accent: "#c98a12", desc: "Из одного слова в другое, меняя по одной букве." },
     { id: "soty", name: "Соты", cat: "Слова", accent: "#e8a800", desc: "Собери как можно больше слов из семи букв." },
-    { id: "chisla", name: "Числа", cat: "Числа", accent: "#2b7de9", desc: "Угадай верное равенство из 8 символов." },
+    { id: "chisla", name: "Равенство", cat: "Числа", accent: "#2b7de9", desc: "Угадай пример из 8 символов вроде 12+35=47." },
     { id: "flag", name: "Флаг", cat: "География", accent: "#d93f4c", desc: "Флаг открывается по кусочку. Чья он?" },
     { id: "kontur", name: "Контур", cat: "География", accent: "#8a5a3c", desc: "Угадай страну по силуэту — подскажут расстояние и направление." },
     { id: "strana", name: "Страна", cat: "География", accent: "#0f9a9a", desc: "Угадай страну по приметам: материк, население, площадь." },
@@ -323,7 +334,7 @@
     if (!document.title) document.title = opts.title + " — " + SITE; // SEO-заголовок из <head> не трогаем
     const h = el("header", "topbar");
     const brand = el("a", "brand");
-    brand.href = "../index.html";
+    brand.href = "../";
     brand.title = "Все игры";
     brand.appendChild(el("span", "brand-tile", "Р"));
     brand.appendChild(el("span", "brand-name", SITE));
@@ -494,7 +505,7 @@
 
   window.Core = {
     dayNumber, msToNextDay, mulberry32, norm, dict, store, loadStats, recordResult,
-    el, toast, shake, share, modal, closeModal, showStats, showHelp, header, keyboard,
+    el, toast, shake, share, shareBox, modal, closeModal, showStats, showHelp, header, keyboard,
     score, EMOJI, practiceSeed, answer, GAMES, SITE, seededShuffle, toCyr, moreGames, icon, tgLink, TELEGRAM,
     siteUrl: () => location.origin + location.pathname.replace(/[^/]*\/[^/]*$/, ""),
   };

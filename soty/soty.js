@@ -225,12 +225,7 @@
     });
     body.appendChild(nums);
     if (!practice && st.found.length) {
-      const foot = C.el("div", "stats-foot");
-      foot.appendChild(C.el("span", "next", ""));
-      const btn = C.el("button", "btn primary", "Поделиться");
-      btn.onclick = () => C.share(shareText());
-      foot.appendChild(btn);
-      body.appendChild(foot);
+      body.appendChild(C.shareBox(shareText()));
       body.appendChild(C.moreGames(GAME));
     }
     C.modal("Статистика", body);
