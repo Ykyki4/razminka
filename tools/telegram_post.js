@@ -11,6 +11,9 @@ const vm = require("vm");
 
 const ROOT = path.join(__dirname, "..");
 const SITE = "https://ykyki4.github.io/razminka/";
+// Метка для Метрики: встроенный браузер Telegram не передаёт referrer, без неё переходы из канала
+// попадают в «Прямые заходы».
+const UTM = "?utm_source=telegram&utm_medium=channel";
 const CAT_EMOJI = { "Слова": "🔤", "Числа": "🔢", "География": "🌍" };
 const MONTHS = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
 
@@ -56,7 +59,7 @@ function morningPost(C) {
   for (const g of C.GAMES) {
     let c = cats.find((x) => x.name === g.cat);
     if (!c) cats.push((c = { name: g.cat, games: [] }));
-    c.games.push(`<a href="${SITE}${g.id}/">${g.name}</a>`);
+    c.games.push(`<a href="${SITE}${g.id}/${esc(UTM)}">${g.name}</a>`);
   }
   return {
     text: [
@@ -103,7 +106,7 @@ async function main() {
       text: post.text,
       parse_mode: "HTML",
       link_preview_options: { url: SITE, prefer_large_media: true, show_above_text: false },
-      reply_markup: { inline_keyboard: [[{ text: post.button, url: SITE }]] },
+      reply_markup: { inline_keyboard: [[{ text: post.button, url: SITE + UTM }]] },
     }),
   });
   const body = await res.json();

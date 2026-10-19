@@ -73,7 +73,8 @@
   function recordResult(game, day, result) {
     const s = loadStats(game);
     if (s.lastDay === day) return s; // уже учтено
-    goal("finish", { game, won: result != null });
+    // Вложенные параметры: в отчёте «Параметры визитов» получается finish → игра → win/lose.
+    goal("finish", { finish: { [game]: result != null ? "win" : "lose" } });
     s.lastDay = day;
     s.played++;
     if (result != null) {
@@ -125,7 +126,7 @@
   }
 
   async function share(text) {
-    goal("share", { game: location.pathname.split("/").filter(Boolean).pop() });
+    goal("share", { share: location.pathname.split("/").filter((p) => p && p !== "index.html").pop() });
     try {
       if (navigator.share && matchMedia("(pointer: coarse)").matches) {
         await navigator.share({ text });
