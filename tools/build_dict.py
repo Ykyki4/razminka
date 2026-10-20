@@ -53,13 +53,17 @@ def main():
     def good_answer(w, frequent=True):
         if w in BLACKLIST or (frequent and w not in rank):
             return False
-        p = morph.parse(w)[0]
-        t = p.tag
-        if t.POS != "NOUN" or t.case != "nomn" or t.number != "sing":
+        def ours(p):
+            return (p.tag.POS == "NOUN" and not BAD_TAGS & set(p.tag.grammemes)
+                    and p.normal_form.replace("ё", "е") == w)
+
+        parses = morph.parse(w)
+        if not any(ours(p) and p.tag.case == "nomn" and p.tag.number == "sing" for p in parses):
             return False
-        if BAD_TAGS & set(t.grammemes):
-            return False
-        return p.normal_form.replace("ё", "е") == w
+        # Частое слово: первый разбор должен быть этим же существительным, но падеж любой —
+        # у «пиво», «окно» первым идёт винительный, он совпадает с именительным. А «уток»,
+        # «выпал» часты как формы «утки», «выпасть» — такие только в бонусные слова «Сот».
+        return not frequent or ours(parses[0])
 
     # Ответы уже опубликованных дней менять нельзя: берём прежний порядок из data/words.js,
     # выбывшие (например, из чёрного списка) слова заменяем на месте новыми, новые — в конец.
