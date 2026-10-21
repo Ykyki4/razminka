@@ -180,7 +180,7 @@
     if (st.done) {
       summary = C.el("div", "summary");
       summary.appendChild(C.el("div", null, "Загаданы были"));
-      summary.appendChild(C.el("div", "word", sols.join(" · ")));
+      summary.append(...C.defSummary(sols));
     }
     C.showStats(GAME, {
       summary,

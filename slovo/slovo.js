@@ -127,7 +127,7 @@
     if (st.done) {
       summary = C.el("div", "summary");
       summary.appendChild(C.el("div", null, st.won ? "Угадано слово" : "Загадано было"));
-      summary.appendChild(C.el("div", "word", solution));
+      summary.append(...C.defSummary([solution]));
     }
     C.showStats(GAME, {
       summary,

@@ -253,6 +253,18 @@ main.game {
 .next span { font-size: 0.85rem; color: var(--muted); }
 .next b { font: 700 1.1rem var(--display); font-variant-numeric: tabular-nums; }
 .summary { text-align: center; margin: 10px 0 0; }
+/* Значения слов (Core.defWord) */
+.has-def { cursor: help; text-decoration: underline dotted; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.def-pop {
+  position: fixed; z-index: 60; max-width: min(320px, calc(100vw - 16px)); box-sizing: border-box;
+  padding: 10px 12px; border-radius: 12px; background: var(--text); color: var(--bg);
+  font: 500 0.88rem/1.4 var(--body); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.def-pop b { font-weight: 800; }
+.def-src { margin-left: 4px; font-size: 0.75rem; color: inherit; opacity: 0.65; white-space: nowrap; }
+.def-lines:not(:empty) { margin: 8px auto 0; max-width: 34em; font-size: 0.85rem; line-height: 1.4; color: var(--muted); }
+.def-line + .def-line { margin-top: 4px; }
+.def-line b { color: var(--text); }
 .summary .word { font: 900 1.4rem var(--display); letter-spacing: 0.04em; text-transform: uppercase; }
 
 /* «Сыграй ещё» в окне статистики */

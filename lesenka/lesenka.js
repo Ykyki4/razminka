@@ -272,7 +272,9 @@
     if (st.done) {
       summary = C.el("div", "summary");
       summary.appendChild(C.el("div", null, "Кратчайший путь"));
-      summary.appendChild(C.el("div", "word path", shortestPath().join(" → ")));
+      const [path, lines] = C.defSummary(shortestPath(), " → ");
+      path.classList.add("path");
+      summary.append(path, lines);
     }
     C.showStats(GAME, {
       summary,

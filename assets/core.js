@@ -294,6 +294,79 @@
     strana: '<path d="M12 22s7-6.3 7-12.2A7 7 0 0 0 5 9.8C5 15.7 12 22 12 22z" fill="currentColor"/><circle cx="12" cy="9.8" r="2.6" fill="#000" fill-opacity=".25"/>',
     globus: '<circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="12" cy="12" rx="4" ry="9.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2.8 9h18.4M2.8 15h18.4" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="8" r="2.4" fill="currentColor"/>',
   };
+  // ---------- Значения слов из Викисловаря (data/defs, собирает tools/build_defs.py) ----------
+  const defFiles = {};
+  function define(word) {
+    const w = norm(word);
+    const code = w.charCodeAt(0);
+    defFiles[code] = defFiles[code] || fetch("../data/defs/" + code + ".json").then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+    return defFiles[code].then((d) => (d[w] ? { word: w, text: d[w].replace(/^\*/, ""), rare: d[w][0] === "*" } : null));
+  }
+
+  let defPop = null, defHide = 0;
+  function hideDef() {
+    clearTimeout(defHide);
+    if (defPop) defPop.remove();
+    defPop = null;
+  }
+  function showDef(node, d) {
+    hideDef();
+    const pop = (defPop = el("div", "def-pop"));
+    pop.for = node;
+    pop.append(el("b", null, d.word), " — " + d.text + " ");
+    const src = el("a", "def-src", "Викисловарь");
+    src.href = "https://ru.wiktionary.org/wiki/" + encodeURIComponent(d.word);
+    src.target = "_blank";
+    src.rel = "noopener";
+    pop.appendChild(src);
+    pop.onmouseenter = () => clearTimeout(defHide);
+    pop.onmouseleave = () => (defHide = setTimeout(hideDef, 250));
+    document.body.appendChild(pop);
+    const r = node.getBoundingClientRect();
+    pop.style.left = Math.max(8, Math.min(innerWidth - pop.offsetWidth - 8, r.left + r.width / 2 - pop.offsetWidth / 2)) + "px";
+    pop.style.top = (r.bottom + pop.offsetHeight + 8 < innerHeight ? r.bottom + 6 : r.top - pop.offsetHeight - 6) + "px";
+  }
+  document.addEventListener("click", (e) => {
+    if (defPop && !defPop.contains(e.target) && !e.target.closest(".has-def")) hideDef();
+  });
+  addEventListener("scroll", hideDef, true);
+  addEventListener("resize", hideDef);
+
+  // Слово с подсказкой: значение по наведению мыши или по нажатию на телефоне.
+  function defWord(node, word) {
+    define(word).then((d) => {
+      if (!d) return;
+      const hover = () => matchMedia("(hover: hover)").matches;
+      node.classList.add("has-def");
+      node.addEventListener("click", (e) => {
+        e.stopPropagation();
+        defPop && defPop.for === node ? hideDef() : showDef(node, d);
+      });
+      node.addEventListener("mouseenter", () => hover() && showDef(node, d));
+      node.addEventListener("mouseleave", () => hover() && (defHide = setTimeout(hideDef, 250)));
+    });
+    return node;
+  }
+
+  // Загаданные слова в итогах: каждое — с подсказкой, а значения редких пишем сразу под ними.
+  function defSummary(words, sepText) {
+    const box = el("div", "word");
+    words.forEach((w, i) => {
+      if (i) box.append(sepText || " · ");
+      box.appendChild(defWord(el("span", null, w), w));
+    });
+    const lines = el("div", "def-lines");
+    Promise.all(words.map(define)).then((ds) => {
+      ds.filter((d) => d && d.rare).forEach((d) => {
+        const line = el("div", "def-line");
+        if (words.length > 1) line.appendChild(el("b", null, d.word + " — "));
+        line.append(d.text);
+        lines.appendChild(line);
+      });
+    });
+    return [box, lines];
+  }
+
   // Telegram-канал: утром — задания, днём — вчерашние ответы (tools/telegram_post.js).
   const TELEGRAM = "https://t.me/razminkadnya";
   const TG_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 4.2 2.9 11.3c-1.1.4-1.1 1.1-.2 1.4l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.7c.3-1.3-.5-1.9-1.5-1.5zM9.6 14.4l8.7-7.9c.4-.3-.1-.5-.6-.2L7.9 13.1z" fill="currentColor"/></svg>';
@@ -505,7 +578,7 @@
 
   window.Core = {
     dayNumber, msToNextDay, mulberry32, norm, dict, store, loadStats, recordResult,
-    el, toast, shake, share, shareBox, modal, closeModal, showStats, showHelp, header, keyboard,
+    el, toast, shake, share, shareBox, define, defWord, defSummary, modal, closeModal, showStats, showHelp, header, keyboard,
     score, EMOJI, practiceSeed, answer, GAMES, SITE, seededShuffle, toCyr, moreGames, icon, tgLink, TELEGRAM,
     siteUrl: () => location.origin + location.pathname.replace(/[^/]*\/[^/]*$/, ""),
   };

@@ -156,8 +156,7 @@
     const show = st.revealed ? [...pz.words, ...st.found.filter((w) => !answers.has(w))] : st.found.slice().sort((a, b) => a.localeCompare(b, "ru"));
     show.forEach((w) => {
       const s = C.el("span", (st.found.includes(w) ? "got" : "miss") + (new Set(w).size === 7 ? " pan" : "") + (answers.has(w) ? "" : " rare"), w);
-      if (!answers.has(w)) s.title = "Редкое слово — бонус";
-      foundList.appendChild(s);
+      foundList.appendChild(C.defWord(s, w));
     });
     reveal.hidden = st.revealed;
     drawWord();
@@ -242,6 +241,7 @@
        </ul>
        <p>Очки: слово из 4 букв — 1 очко, длиннее — по очку за букву. <b>Панграмма</b> — слово со всеми семью буквами — ещё +7.</p>
        <p>Редкие слова тоже засчитываются и дают очки, но в число слов дня не входят — это бонус.</p>
+       <p>Нажми на найденное слово, чтобы узнать его значение.</p>
        <p>Набирай очки и поднимайся по рангам до «Гения». Кнопка ⟳ (или пробел) перемешивает буквы.</p>`
     );
   }
