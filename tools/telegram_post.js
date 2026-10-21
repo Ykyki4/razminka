@@ -70,7 +70,7 @@ function morningPost(C) {
       "",
       "Сколько попыток ушло у тебя? Делись результатом 👇",
     ].join("\n"),
-    button: "Играть ▶",
+    button: "Играть",
   };
 }
 
@@ -86,13 +86,17 @@ function answersPost(C) {
       "",
       "Что далось труднее всего? Пиши в комментариях 👇",
     ].join("\n"),
-    button: "Сыграть сегодняшнюю ▶",
+    button: "Сыграть сегодняшнюю",
   };
 }
 
 async function main() {
   const C = loadCore();
   const post = process.env.MODE === "answers" ? answersPost(C) : morningPost(C);
+  // Ссылка текстом, а не инлайн-кнопкой: у постов с кнопками Telegram прячет «Комментарии».
+  post.text += `
+
+<a href="${SITE}${esc(UTM)}">▶ <b>${post.button}</b></a>`;
   const token = process.env.TG_TOKEN;
   if (!token || process.env.DRY_RUN === "1") {
     console.log(post.text);
@@ -106,7 +110,6 @@ async function main() {
       text: post.text,
       parse_mode: "HTML",
       link_preview_options: { url: SITE, prefer_large_media: true, show_above_text: false },
-      reply_markup: { inline_keyboard: [[{ text: post.button, url: SITE + UTM }]] },
     }),
   });
   const body = await res.json();
