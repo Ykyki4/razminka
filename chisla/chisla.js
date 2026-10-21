@@ -48,6 +48,30 @@
     return v;
   }
 
+  // Каноническая запись: слагаемые со знаками и множители внутри них отсортированы, так что
+  // 2×5×8=40 и 8×2×5=40, 10−3+5=12 и 10+5−3=12 считаются одним и тем же равенством.
+  function canon(s) {
+    const [lhs, rhs] = s.split("=");
+    const toks = lhs.match(/\d+|[+\-×÷]/g);
+    const terms = [];
+    let term = { sign: "+", mul: [toks[0]], div: [] };
+    for (let i = 1; i < toks.length; i += 2) {
+      const op = toks[i], n = toks[i + 1];
+      if (op === "×") term.mul.push(n);
+      else if (op === "÷") term.div.push(n);
+      else {
+        terms.push(term);
+        term = { sign: op, mul: [n], div: [] };
+      }
+    }
+    terms.push(term);
+    const key = (t) => t.sign + t.mul.sort().join("×") + (t.div.length ? "÷" + t.div.sort().join("÷") : "");
+    return terms.map(key).sort().join("") + "=" + rhs;
+  }
+  const same = (g) => g === solution || canon(g) === canon(solution);
+  // С чем сравнивать попытку: угаданная перестановка красится целиком в зелёный.
+  const target = (g) => (same(g) ? g : solution);
+
   // Загаданное равенство дня: случайное, но без скучных ×1, ÷1 и нулей слева.
   function generate(seed) {
     const rnd = C.mulberry32(seed);
@@ -114,7 +138,7 @@
   }
 
   function paintRow(r, g, animate) {
-    const res = C.score(g, solution);
+    const res = C.score(g, target(g));
     rows[r].tiles.forEach((t, i) => {
       t.textContent = g[i];
       const apply = () => {
@@ -159,7 +183,7 @@
     st.guesses.push(g);
     cur = "";
     busy = true;
-    const won = g === solution;
+    const won = same(g);
     if (won || st.guesses.length === TRIES) {
       st.done = true;
       st.won = won;
@@ -176,7 +200,7 @@
   }
 
   function shareText() {
-    const grid = st.guesses.map((g) => C.score(g, solution).map((s) => C.EMOJI[s]).join("")).join("\n");
+    const grid = st.guesses.map((g) => C.score(g, target(g)).map((s) => C.EMOJI[s]).join("")).join("\n");
     return `Равенство №${day} ${st.won ? st.guesses.length : "✕"}/${TRIES}\n${grid}\n${C.siteUrl()}`;
   }
 
@@ -185,7 +209,7 @@
     if (st.done) {
       summary = C.el("div", "summary");
       summary.appendChild(C.el("div", null, st.won ? "Угадано равенство" : "Загадано было"));
-      summary.appendChild(C.el("div", "word", solution));
+      summary.appendChild(C.el("div", "word", st.won ? st.guesses[st.guesses.length - 1] : solution));
     }
     C.showStats(GAME, {
       summary,
@@ -204,7 +228,8 @@
        <p>Каждая попытка тоже должна быть верным равенством. Справа от «=» — только число.</p>
        ${mini("12+35=47", ["correct", "", "present", "", "", "", "", "absent"])}
        <p><b>1</b> на своём месте, <b>+</b> есть, но в другом месте, <b>7</b> нет совсем.</p>
-       <p>Сначала считаются × и ÷, потом + и −. Делить можно только нацело. Числа не начинаются с нуля.</p>`
+       <p>Сначала считаются × и ÷, потом + и −. Делить можно только нацело. Числа не начинаются с нуля.</p>
+       <p>Перестановки засчитываются: если загадано 2×5×8=40, то 8×2×5=40 — тоже победа.</p>`
     );
   }
 })();
