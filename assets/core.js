@@ -309,8 +309,19 @@
     if (defPop) defPop.remove();
     defPop = null;
   }
+  // Обработчики вешаем при первом показе, а не при загрузке: core.js выполняется и в Node
+  // (tools/telegram_post.js), где у document нет addEventListener.
+  let defListening = false;
   function showDef(node, d) {
     hideDef();
+    if (!defListening) {
+      defListening = true;
+      document.addEventListener("click", (e) => {
+        if (defPop && !defPop.contains(e.target) && !e.target.closest(".has-def")) hideDef();
+      });
+      addEventListener("scroll", hideDef, true);
+      addEventListener("resize", hideDef);
+    }
     const pop = (defPop = el("div", "def-pop"));
     pop.for = node;
     pop.append(el("b", null, d.word), " — " + d.text + " ");
@@ -326,11 +337,6 @@
     pop.style.left = Math.max(8, Math.min(innerWidth - pop.offsetWidth - 8, r.left + r.width / 2 - pop.offsetWidth / 2)) + "px";
     pop.style.top = (r.bottom + pop.offsetHeight + 8 < innerHeight ? r.bottom + 6 : r.top - pop.offsetHeight - 6) + "px";
   }
-  document.addEventListener("click", (e) => {
-    if (defPop && !defPop.contains(e.target) && !e.target.closest(".has-def")) hideDef();
-  });
-  addEventListener("scroll", hideDef, true);
-  addEventListener("resize", hideDef);
 
   // Слово с подсказкой: значение по наведению мыши или по нажатию на телефоне.
   function defWord(node, word) {

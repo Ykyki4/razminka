@@ -1,0 +1,18 @@
+# Проверка при каждом push: посты для Telegram собираются (core.js и игры выполняются в Node).
+# Без неё поломка всплывает только утром, когда пост не выходит.
+name: Check
+
+on: push
+
+jobs:
+  telegram-dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tools/telegram_post.js
+        env: { DRY_RUN: "1", MODE: morning }
+      - run: node tools/telegram_post.js
+        env: { DRY_RUN: "1", MODE: answers }

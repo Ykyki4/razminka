@@ -1,11 +1,12 @@
 # Посты в Telegram-канал. Секреты репозитория: TG_TOKEN (токен бота), TG_CHAT (@канал).
-# GitHub может запустить расписание с опозданием до получаса.
+# GitHub запускает расписание с опозданием (бывало и на несколько часов), сильнее всего — в начале
+# часа, поэтому минуты нарочно некруглые и время чуть раньше нужного.
 name: Telegram
 
 on:
   schedule:
-    - cron: "0 5 * * *" # 08:00 по Москве — задания дня готовы
-    - cron: "0 10 * * *" # 13:00 по Москве — вчерашние ответы
+    - cron: "17 4 * * *" # 07:17 по Москве — задания дня готовы
+    - cron: "17 9 * * *" # 12:17 по Москве — вчерашние ответы
   workflow_dispatch: # кнопка «Run workflow» — опубликовать прямо сейчас
     inputs:
       mode:
@@ -24,6 +25,6 @@ jobs:
           node-version: 20
       - run: node tools/telegram_post.js
         env:
-          MODE: ${{ inputs.mode || (github.event.schedule == '0 10 * * *' && 'answers' || 'morning') }}
+          MODE: ${{ inputs.mode || (github.event.schedule == '17 9 * * *' && 'answers' || 'morning') }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT: ${{ secrets.TG_CHAT }}
