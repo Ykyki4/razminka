@@ -5,7 +5,7 @@
 ## Запуск и выкладка
 - **Локально:** `Запустить.bat` (или `python tools/serve.py`) → http://localhost:8765/. Открывать `index.html` прямо с диска не стоит: Firefox даёт каждому файлу своё хранилище, и главная не видит прогресс игр.
 - **SEO и превью ссылок:** тексты — в `tools/seo.json`; `python tools/build_seo.py` вписывает мета-теги в страницы и пересобирает `sitemap.xml`, картинки `assets/og/*.png` рисует `cd tools && node build_og.js` (при запущенном `serve.py`).
-- **Telegram-канал:** `.github/workflows/telegram.yml` запускает `tools/telegram_post.js` в 08:00 МСК (задания дня) и в 13:00 МСК (вчерашние ответы под спойлером; секреты `TG_TOKEN` и `TG_CHAT`). Ответ каждая игра сообщает через `C.answer(...)` — скрипт выполняет код игр и забирает его. Посмотреть пост без отправки: `node tools/telegram_post.js` или `MODE=answers node tools/telegram_post.js`.
+- **Telegram-канал:** `.github/workflows/telegram.yml` запускает `tools/telegram_post.js` в 08:00 МСК (задания дня) и в 15:00 МСК (вчерашние ответы под спойлером; расписание срабатывает заранее и ждёт нужного времени, потому что GitHub опаздывает на часы; секреты `TG_TOKEN` и `TG_CHAT`). Ответ каждая игра сообщает через `C.answer(...)` — скрипт выполняет код игр и забирает его. Посмотреть пост без отправки: `node tools/telegram_post.js` или `MODE=answers node tools/telegram_post.js`.
 - **Выкладка:** `python tools/version.py` (метки `?v=` против старого кэша у игроков), затем `git commit` и `git push` — GitHub Pages обновится сам за минуту-две.
 
 | Папка | Игра | Прототип |

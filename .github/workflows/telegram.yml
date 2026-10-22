@@ -1,12 +1,13 @@
 # Посты в Telegram-канал. Секреты репозитория: TG_TOKEN (токен бота), TG_CHAT (@канал).
-# GitHub запускает расписание с опозданием (бывало и на несколько часов), сильнее всего — в начале
-# часа, поэтому минуты нарочно некруглые и время чуть раньше нужного.
+# GitHub запускает расписание с опозданием, бывает и на 4–5 часов. Поэтому расписание стоит
+# с запасом, а задача сама ждёт нужного времени (AT) и публикует пост точно в срок. Если GitHub
+# опоздал сильнее запаса — публикует сразу. Репозиторий публичный, ожидание минут не тратит.
 name: Telegram
 
 on:
   schedule:
-    - cron: "17 4 * * *" # 07:17 по Москве — задания дня готовы
-    - cron: "17 9 * * *" # 12:17 по Москве — вчерашние ответы
+    - cron: "17 0 * * *" # 03:17 МСК → пост с заданиями в 08:00
+    - cron: "17 7 * * *" # 10:17 МСК → вчерашние ответы в 15:00
   workflow_dispatch: # кнопка «Run workflow» — опубликовать прямо сейчас
     inputs:
       mode:
@@ -18,13 +19,22 @@ on:
 jobs:
   post:
     runs-on: ubuntu-latest
+    timeout-minutes: 355 # GitHub не даёт задаче жить дольше 6 часов
+    env:
+      MODE: ${{ inputs.mode || (github.event.schedule == '17 7 * * *' && 'answers' || 'morning') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Ждём времени публикации
+        if: github.event_name == 'schedule'
+        run: |
+          at=$([ "$MODE" = answers ] && echo 15:00 || echo 08:00)
+          wait=$(( $(TZ=Europe/Moscow date -d "today $at" +%s) - $(date +%s) ))
+          echo "пост $MODE в $at МСК, ждём $wait с"
+          if [ "$wait" -gt 0 ]; then sleep "$wait"; fi
       - run: node tools/telegram_post.js
         env:
-          MODE: ${{ inputs.mode || (github.event.schedule == '17 9 * * *' && 'answers' || 'morning') }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT: ${{ secrets.TG_CHAT }}
